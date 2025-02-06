@@ -1,0 +1,97 @@
+conda activate bela (op colossus)
+heeft python 3,8 numpy pandas kappotte versie fastparquet
+
+but this works:
+
+colossus/python3.10
+
+>>> import numpy
+>>> import tzdata
+>>> import pytz
+>>> import six
+>>> import dateutil
+>>> import pandas
+>>> import fastparquet
+>>> df = pandas.read_parquet("hf://datasets/peemil/WiNNL/data/train-00000-of-00001.parquet")
+>>> df.head
+<bound method NDFrame.head of                                                original                                             tokens  ... language                                                url
+0     13 de diciembre de 2010 13 de diciembre de 201...  [13, de, diciembre, de, 2010, 13, de, diciembr...  ...       es  https://es.wikinews.org/wiki/Legionarios_de_Cr...
+1     No obstante, se respetará que miembros de la m...  [No, obstante, ,, se, respetará, que, miembros...  ...       es  https://es.wikinews.org/wiki/Legionarios_de_Cr...
+2     14 de septiembre de 2009 14 de septiembre de 2...  [14, de, septiembre, de, 2009, 14, de, septiem...  ...       es  https://es.wikinews.org/wiki/Falleci%C3%B3_Pat...
+3     El actor, protagonista de Ghost y Dirty Dancin...  [El, actor, ,, protagonista, de, Ghost, y, Dir...  ...       es  https://es.wikinews.org/wiki/Falleci%C3%B3_Pat...
+4     Vía Facebook, la mandataria ha sido criticada ...  [Vía, Facebook, ,, la, mandataria, ha, sido, c...  ...       es  https://es.wikinews.org/wiki/Cientos_de_costar...
+...                                                 ...                                                ...  ...      ...                                                ...
+6759  mercoledì 30 gennaio 2013 Il Decreto legislati...  [mercoledì, 30, gennaio, 2013, Il, Decreto, le...  ...       it  https://it.wikinews.org/wiki/La_nuova_normativ...
+6760  Gli ultimi 300 provengono dall'Africa subsahar...  [Gli, ultimi, 300, provengono, dall, ', Africa...  ...       it  https://it.wikinews.org/wiki/900_clandestini_s...
+6761  “Ogni volta che si discute di Darfur se ne par...  [“, Ogni, volta, che, si, discute, di, Darfur,...  ...       it  https://it.wikinews.org/wiki/La_sostenibilit%C...
+6762  lunedì 1 luglio 2013 Si è corsa stasera la Pro...  [lunedì, 1, luglio, 2013, Si, è, corsa, staser...  ...       it  https://it.wikinews.org/wiki/Palio_di_Siena_de...
+6763  Solo un piccolo problema alla mossa con il Nic...  [Solo, un, piccolo, problema, alla, mossa, con...  ...       it  https://it.wikinews.org/wiki/Palio_di_Siena_de...
+>>> print(df.loc[df['language']=='nl'])
+                                               original                                             tokens  ... language                                                url
+4123  Dit resulteerde in meer dan 200 bewerkingen op...  [Dit, resulteerde, in, meer, dan, 200, bewerki...  ...       nl  https://nl.wikinews.org/wiki/2023-11_Nieuwsbri...
+4124  We hebben in een panel van experts van digital...  [We, hebben, in, een, panel, van, experts, van...  ...       nl  https://nl.wikinews.org/wiki/Wikimedia_Foundat...
+4125  Weyts roept de slachthuissector op de 'rotte a...  [Weyts, roept, de, slachthuissector, op, de, '...  ...       nl  https://nl.wikinews.org/wiki/Slachthuis_in_Ize...
+4126  Het is al de derde keer dit jaar dat Animal Ri...  [Het, is, al, de, derde, keer, dit, jaar, dat,...  ...       nl  https://nl.wikinews.org/wiki/Slachthuis_in_Ize...
+4127  Vandaag hield Animal Rights en Bite Back nog e...  [Vandaag, hield, Animal, Rights, en, Bite, Bac...  ...       nl  https://nl.wikinews.org/wiki/Slachthuis_in_Ize...
+...                                                 ...                                                ...  ...      ...                                                ...
+5617  Zeman won in de tweede ronde nipt van de 68-ja...  [Zeman, won, in, de, tweede, ronde, nipt, van,...  ...       nl  https://nl.wikinews.org/wiki/Milo%C5%A1_Zeman_...
+5618  Hiermee begint hij aan zijn tweede vijfjaarste...  [Hiermee, begint, hij, aan, zijn, tweede, vijf...  ...       nl  https://nl.wikinews.org/wiki/Milo%C5%A1_Zeman_...
+5619  Het officieel vastgestelde aantal doden wereld...  [Het, officieel, vastgestelde, aantal, doden, ...  ...       nl  https://nl.wikinews.org/wiki/Wereldwijd_nu_mee...
+5620  De onrust bereikte een hoogtepunt toen de demo...  [De, onrust, bereikte, een, hoogtepunt, toen, ...  ...       nl  https://nl.wikinews.org/wiki/Demonstraties_in_...
+5621  Daarnaast beroept de Chinese regering zich op ...  [Daarnaast, beroept, de, Chinese, regering, zi...  ...       nl  https://nl.wikinews.org/wiki/Chinese_regering_...
+
+[1499 rows x 6 columns]
+>>> dutch_df = df.loc[df['language']=='nl']
+>>> dutch_df.to_csv('dutch_winnl_data.csv')
+
+but this gives not the best result as lists are treated as strings etc, so better to write to json, but not that you must ensure it is utf-8
+
+>>> with open('df.json', 'w', encoding='utf-8') as file:
+...     dutch_df.to_json(file,force_ascii=False)
+
+%%%% refined
+ 
+op colossus, python3.10
+-- numpy opnieuw geinstalleerd 2.0 --> 1.24 
+import refined werkt weer
+laden van een model levert: AttributeError: add_special_tokens conflicts with the method add_special_tokens in RobertaTokenizer
+
+de conda methode voor 3.8 levert uiteindelijk:
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+deeplake 3.2.12 requires numcodecs, which is not installed.
+deeplake 3.2.12 requires pillow, which is not installed.
+deeplake 3.2.12 requires pyjwt, which is not installed.
+geocoder 1.38.1 requires future, which is not installed.
+nmslib 2.1.1 requires psutil, which is not installed.
+notebook 6.4.3 requires ipykernel, which is not installed.
+notebook 6.4.3 requires ipython-genutils, which is not installed.
+notebook 6.4.3 requires jupyter-client>=5.3.4, which is not installed.
+notebook 6.4.3 requires jupyter-core>=4.6.1, which is not installed.
+notebook 6.4.3 requires nbconvert, which is not installed.
+notebook 6.4.3 requires nbformat, which is not installed.
+notebook 6.4.3 requires pyzmq>=17, which is not installed.
+notebook 6.4.3 requires Send2Trash>=1.5.0, which is not installed.
+notebook 6.4.3 requires traitlets>=4.2.1, which is not installed.
+pandas 1.3.2 requires pytz>=2017.3, which is not installed.
+sacrebleu 2.3.1 requires colorama, which is not installed.
+sacrebleu 2.3.1 requires lxml, which is not installed.
+scikit-learn 1.0.2 requires scipy>=1.1.0, which is not installed.
+sentence-transformers 2.2.0 requires scipy, which is not installed.
+torchvision 0.11.2+cu113 requires pillow!=8.3.0,>=5.3.0, which is not installed.
+typing-inspect 0.8.0 requires mypy-extensions>=0.3.0, which is not installed.
+mordecai3 3.0.0a0 requires torch<2.0,>=1.2.0, but you have torch 2.4.1 which is incompatible.
+scispacy 0.5.0 requires spacy<3.3.0,>=3.2.0, but you have spacy 3.5.2 which is incompatible.
+torchaudio 0.10.1+cu113 requires torch==1.10.1, but you have torch 2.4.1 which is incompatible.
+torchvision 0.11.2+cu113 requires torch==1.10.1, but you have torch 2.4.1 which is incompatible.
+
+but still works for inference
+
+
+>>> refined = Refined.from_pretrained(model_name='wikipedia_model_with_numbers',
+                                  entity_set="wikipedia")
+>>> spans = refined.process_text("England won the FIFA World Cup in 1966.")
+>>> spans
+[['England', Entity(wikidata_entity_id=Q47762, wikipedia_entity_title=England national football team), 'ORG'], ['FIFA World Cup', Entity(wikidata_entity_id=Q19317, wikipedia_entity_title=FIFA World Cup), 'EVENT'], ['1966', Entity(parsed_string=[timepoint: ["1966"]]), 'DATE']]
+
+
+
